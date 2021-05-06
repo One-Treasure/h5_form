@@ -152,8 +152,7 @@
 <script>
 import { ref } from 'vue'
 import { Toast } from 'vant'
-import axiosApi from '../utils/http'
-import { GetHome } from '@/utils/api.js'
+import { GETTREEDATA, three } from '@/utils/api'
 export default {
 	components: {
 		Toast,
@@ -186,16 +185,9 @@ export default {
 		onActionSheet() {
 			this.show = true
 			this.arrow = 'up'
-			/* axiosApi('', {}, 'get').then(res => {
-				console.log(res)
-				for (let i = 0; i < res.data.length; i++) {
-					res.data[i].type = 0
-				}
-				this.sebarList = res.data
-			}) */
-      GetHome().then(res=>{
-        console.log(res);
-      });
+			three().then(res=>{
+				console.log(res);
+			})
 		},
 		onSelect(item) {
 			// 默认情况下点击选项时不会自动收起

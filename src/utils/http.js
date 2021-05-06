@@ -1,74 +1,51 @@
-import axios from "axios";
-import qs from "qs";
-import {
-  Dialog,
-  Toast
-} from "vant";
-
-// axios.defaults.baseURL = 'http://hplqy.suoluomei.cn/index.php?s=/hfs/Api/'  //正式
-axios.defaults.baseURL = '/api' //测试
-
-//post请求头
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded;charset=UTF-8";
-//设置超时
-axios.defaults.timeout = 10000;
-
-axios.interceptors.request.use(
-  config => {
-    Toast.loading({
-      duration: 0,
-      message: '加载中...',
-      forbidClick: true,
-    });
+import axios from 'axios'
+//创建axios的一个实例 
+var instance = axios.create({
+    baseURL:'/api',//接口统一域名
+    timeout: 6000                                                       //设置超时
+})
+ 
+ 
+//------------------- 一、请求拦截器 忽略
+instance.interceptors.request.use(function (config) {
+ 
     return config;
-  },
-  error => {
+}, function (error) {
+    // 对请求错误做些什么
+    
     return Promise.reject(error);
-  }
-);
-
-axios.interceptors.response.use(
-  response => {
-    Toast.clear();
-    return response;
-  },
-  error => {
-    Toast.clear();
-    Dialog.alert({
-      title: "提示",
-      message: "网络请求失败，反馈给客服"
-    });
-  }
-);
-
-export default function axiosApi(type, params, method) {
-  let sign = process.env.VUE_APP_SIGN
-  if (process.env.NODE_ENV === 'production') {
-    sign = localStorage.getItem("wx_sign")
-  } else {
-    sign = 'crm:user:sign:f0c8cbe468f6a34463d198268290903f'
-  }
-  var value = {
-    sign: sign
-  }
-  var data = method == "post" ? qs.stringify(Object.assign(value, params)) : Object.assign(value, params)
-  return new Promise((resolve, reject) => {
-    axios({
-        method: method,
-        url: type,
-        data: data
-      })
-      .then(res => {
-        if (res.data.errcode == 0) {
-          resolve(res.data)
-        } else {
-          // 接口错误提示
-          Toast.fail(res.data.msg);
-        }
-      })
-      .catch(err => {
-        reject(err)
-      });
-  })
-};
+});
+ 
+//----------------- 二、响应拦截器 忽略
+instance.interceptors.response.use(function (response) {
+    
+    return response.data;
+}, function (error) {
+    // 对响应错误做点什么
+    console.log('拦截器报错');
+    return Promise.reject(error);
+});
+ 
+/**
+ * 使用es6的export default导出了一个函数，导出的函数代替axios去帮我们请求数据，
+ * 函数的参数及返回值如下：
+ * @param {String} method  请求的方法：get、post、delete、put
+ * @param {String} url     请求的url:
+ * @param {Object} data    请求的参数
+ * @returns {Promise}     返回一个promise对象，其实就相当于axios请求数据的返回值
+ */
+export default function (method, url, data = null) {
+    method = method.toLowerCase();
+    if (method == 'post') {
+        return instance.post(url, data)
+    } else if (method == 'get') {
+        return instance.get(url, { params: data })
+    } else if (method == 'delete') {
+        return instance.delete(url, { params: data })
+    }else if(method == 'put'){
+        return instance.put(url,data)
+    }else{
+        console.error('未知的method'+method)
+        return false
+    }
+}
