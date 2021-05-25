@@ -4,6 +4,7 @@ import router from './router'
 import { Button, Field, CellGroup, Form, ActionSheet, Uploader, RadioGroup, Radio } from 'vant'
 import 'vant/lib/index.css' // 全局引入样式
 import 'amfe-flexible/index.js'
+import { Icon } from 'vant'
 
 const app = createApp(App)
 
@@ -17,5 +18,6 @@ app.use(ActionSheet)
 app.use(Uploader)
 app.use(RadioGroup)
 app.use(Radio)
+app.use(Icon)
 
 app.mount('#app')

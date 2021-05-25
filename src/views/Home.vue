@@ -1,5 +1,5 @@
 <template>
-	<h4>天运华彩成人组报名表</h4>
+	<h4>天韵华彩成人组报名表</h4>
 	<van-form @submit="onSubmit">
 		<van-cell-group title="参赛资料">
 			<van-field
@@ -92,15 +92,22 @@
 				v-model="name"
 				:rules="[{ required: true, message: '请填写节目时长' }]"
 			/>
-			<van-field name="music" label="音乐上传">
+			<!-- <van-field name="music" label="音乐上传">
 				<template #input>
-					<van-uploader v-model="music">
+					<van-uploader v-model="music" accept="audio/*">
 						<van-button icon="plus" type="primary" size="small"
 							>上传音乐</van-button
 						>
 					</van-uploader>
 				</template>
-			</van-field>
+			</van-field> -->
+			<van-field
+				name="music"
+				label="参赛音乐"
+				placeholder="请输入您要使用的音乐名"
+				v-model="music"
+				:rules="[{ required: true, message: '请填写音乐名称' }]"
+			/>
 			<van-field
 				name="姓名"
 				label="姓名"
@@ -177,16 +184,26 @@ export default {
 			actions: [{ name: '男' }, { name: '女' }],
 			arrow: 'down',
 			uploader: [],
-			music: []
+			music: ''
 		}
 	},
 	methods: {
-		onSubmit() {},
+		onSubmit(e) {
+			console.log('submit', e)
+			Toast.loading({
+				message: '加载中...',
+				forbidClick: true,
+				loadingType: 'spinner'
+			})
+			setTimeout(() => {
+				this.$router.push('/success')
+			}, 1000);
+		},
 		onActionSheet() {
 			this.show = true
 			this.arrow = 'up'
-			three().then(res=>{
-				console.log(res);
+			three().then(res => {
+				console.log(res)
 			})
 		},
 		onSelect(item) {
