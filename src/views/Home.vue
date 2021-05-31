@@ -229,24 +229,20 @@ export default {
 				e.group = 2
 			}
 			e.upload = this.uploader
+			if(this.uploader.length===0){
+				Toast.fail('请至少上传一张照片')
+				return;
+			}
 			this.isDisable = true
 			setTimeout(() => {
 				this.isDisable = false
-			}, 1000)
+			}, 2000)
 			POSTTREEDATA(e).then(res => {
 				if (res.message === '报名成功') {
-					Toast.clear();
 					this.$router.push('/success')
+					Toast.clear();
 				}
 			})
-			/* Toast.loading({
-				message: '加载中...',
-				forbidClick: true,
-				loadingType: 'spinner'
-			})
-			setTimeout(() => {
-				this.$router.push('/success')
-			}, 1000) */
 		},
 		/* 选择组别点击事件 */
 		setGroup() {
